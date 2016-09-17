@@ -2,10 +2,10 @@ from __future__ import division
 from TT_basics_tools import SplitStripper, Finder, Lister
 from TT_basics_data import RouteCode, PlatformRoutes, RouteSpeeds, Station, Yard, Loop, Junction, Siding, Edge, TrainType, LineOfRouteNode, LineOfRoute, SceneNode, SceneLink, Scene
 
+
 # We create a tool that translates route code input and output.
 
 class RouteCodeTranslator(object):
-
     def decode(self, route_code_line):
         split_stripper = SplitStripper()
         name_string, maximum_speed_string, colour_string = split_stripper.split_strip(route_code_line, ';')
@@ -20,10 +20,10 @@ class RouteCodeTranslator(object):
         route_code_line = ';'.join([name_string, maximum_speed_string, colour_string])
         return route_code_line
 
+
 # We create a tool that translates platform route finder input and output.
 
 class PlatformRouteTranslator(object):
-
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
         
@@ -50,10 +50,10 @@ class PlatformRouteTranslator(object):
             platform_routes_line = ','.join(platform_route_strings)
         return platform_routes_line
 
+
 # We create a tool that translates timing point input and output.
 
 class TimingPointTranslator(object):
-
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
         self.platform_route_translator = PlatformRouteTranslator(self.route_code_controller)
@@ -91,10 +91,10 @@ class TimingPointTranslator(object):
         timing_point_line = ';'.join([name_string, abbrev_string, timing_point_type_string, default_halt_string, default_dwell_string, platform_routes_string])
         return timing_point_line
 
+
 # We create a tool that translates route speed input and output.
 
 class RouteSpeedTranslator(object):
-
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
         
@@ -123,10 +123,10 @@ class RouteSpeedTranslator(object):
             route_speeds_line = ','.join(route_speed_strings)
         return route_speeds_line
         
+
 # We create a tool that translates edge input and output.
 
-class EdgeTranslator(object):
-    
+class EdgeTranslator(object):    
     def __init__(self, route_code_controller, timing_point_controller):
         self.route_code_controller = route_code_controller
         self.timing_point_controller = timing_point_controller
@@ -152,10 +152,10 @@ class EdgeTranslator(object):
         edge_line = ';'.join([timing_point_from_string, timing_point_to_string, distance_string, route_speeds_line])
         return edge_line
         
+
 # We create a tool that translates line of route input and output.
 
 class LineOfRouteTranslator(object):
-
     def __init__(self, timing_point_controller):
         self.timing_point_controller = timing_point_controller
     
@@ -184,10 +184,10 @@ class LineOfRouteTranslator(object):
         line_of_route_line = ';'.join(line_of_route_node_strings)
         return line_of_route_line
 
+
 # We create a tool that translates train type input and output.
         
 class TrainTypeTranslator(object):
-
     def decode(self, train_type_line):
         split_stripper = SplitStripper()
         train_type_string, headcode_initial_string, top_speed_string, acceleration_string, deceleration_string, default_train_dwell_string = split_stripper.split_strip(train_type_line, ';')
@@ -208,10 +208,10 @@ class TrainTypeTranslator(object):
         train_type_line = ';'.join([train_type_string, headcode_initial_string, top_speed_string, acceleration_string, deceleration_string, default_train_dwell_string])
         return train_type_line
 
+
 # We create a tool that translates visualisation scene input.
 
 class SceneTranslator(object):
-
     def __init__(self, timing_point_controller, edge_controller, route_code_controller):
         self.timing_point_controller = timing_point_controller
         self.edge_controller = edge_controller
