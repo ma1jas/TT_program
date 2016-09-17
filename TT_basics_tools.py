@@ -1,23 +1,23 @@
 # We create a "list object" class, so as later to be able to instantiate self-contained list objects.
-            
+
 class Lister(object):
-    
+
     def __init__(self):
         self.lister = []
-    
+
     @property
     def length(self):
         return len(self.lister)
-        
+
     def add_item(self, item):
         self.lister.append(item)
-        
+
     def delete_item(self, item):
         self.lister.remove(item)
-        
+
     def __getitem__(self, reference):
         return self.lister[reference]
-        
+
     def is_it_empty(self):
         if self.length == 0:
             return True
@@ -30,24 +30,24 @@ class Finder(object):
 
     def __init__(self):
         self.finder = {}
-        
+
     @property
     def length(self):
         return len(self.finder)
-    
+
     def __setitem__(self, key, value):
         self.finder[key] = value
-                
+
     def delete(self, key):
         self.finder.__delitem__(key)
-    
+
     def __getitem__(self, key):
         if key in self.finder:
             return self.finder[key]
-            
+
     def __iter__(self):
         return self.finder.itervalues()
-                    
+
     def is_it_empty(self):
         if self.length == 0:
             return True

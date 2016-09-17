@@ -11,7 +11,7 @@ class RouteCodeTranslator(object):
         maximum_speed = float(maximum_speed_string)/60
         route_code = RouteCode(name_string, maximum_speed, colour_string)
         return route_code
-        
+
     def encode(self, route_code):
         name_string = route_code.name
         maximum_speed_string = str(60*route_code.maximum_speed)
@@ -25,7 +25,7 @@ class RouteCodeTranslator(object):
 class PlatformRouteTranslator(object):
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
-        
+
     def decode(self, platform_routes_line):
         platform_routes = PlatformRoutes()
         if platform_routes_line.strip() != '':
@@ -35,7 +35,7 @@ class PlatformRouteTranslator(object):
                 route_code = self.route_code_controller[route_code_name]
                 platform_routes[platform_string] = route_code
         return platform_routes
-            
+
     def encode(self, platform_routes):
         platform_routes_line = ''
         if not platform_routes.is_it_empty():
@@ -75,7 +75,7 @@ class TimingPointTranslator(object):
         timing_point.city_calls = None
         timing_point.city_quickest_group = None
         return timing_point
-            
+
     def encode(self, timing_point):
         name_string = timing_point.name
         abbrev_string = timing_point.abbrev
@@ -94,7 +94,7 @@ class TimingPointTranslator(object):
 class RouteSpeedTranslator(object):
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
-        
+
     def decode(self, route_speeds_line):
         route_speeds = RouteSpeeds()
         if route_speeds_line.strip() != '':
@@ -105,7 +105,7 @@ class RouteSpeedTranslator(object):
                 speed = float(speed_string)/60
                 route_speeds[route_code] = speed
         return route_speeds
-        
+
     def encode(self, route_speeds):
         route_speeds_line = ''
         if not route_speeds.is_it_empty():
@@ -118,11 +118,11 @@ class RouteSpeedTranslator(object):
                 route_speed_strings.append(route_speed_string)
             route_speeds_line = ','.join(route_speed_strings)
         return route_speeds_line
-        
+
 
 # We create a tool that translates edge input and output.
 
-class EdgeTranslator(object):    
+class EdgeTranslator(object):
     def __init__(self, route_code_controller, timing_point_controller):
         self.route_code_controller = route_code_controller
         self.timing_point_controller = timing_point_controller
@@ -137,7 +137,7 @@ class EdgeTranslator(object):
         edge = Edge(timing_point_from, timing_point_to, edge_length, route_speeds)
         back_edge = Edge(timing_point_to, timing_point_from, edge_length, route_speeds)
         return edge, back_edge
-        
+
     def encode(self, edge):
         timing_point_from_string = edge.timing_point_from.name
         timing_point_to_string = edge.timing_point_to.name
@@ -146,14 +146,14 @@ class EdgeTranslator(object):
         route_speeds_line = self.route_speed_translator.encode(edge.route_speeds)
         edge_line = ';'.join([timing_point_from_string, timing_point_to_string, distance_string, route_speeds_line])
         return edge_line
-        
+
 
 # We create a tool that translates line of route input and output.
 
 class LineOfRouteTranslator(object):
     def __init__(self, timing_point_controller):
         self.timing_point_controller = timing_point_controller
-    
+
     def decode(self, line_of_route_line):
         line_of_route = LineOfRoute()
         node_string_list = split_strip(line_of_route_line, ';')
@@ -180,7 +180,7 @@ class LineOfRouteTranslator(object):
 
 
 # We create a tool that translates train type input and output.
-        
+
 class TrainTypeTranslator(object):
     def decode(self, train_type_line):
         train_type_string, headcode_initial_string, top_speed_string, acceleration_string, deceleration_string, default_train_dwell_string = split_strip(train_type_line, ';')
@@ -190,7 +190,7 @@ class TrainTypeTranslator(object):
         default_train_dwell = float(default_train_dwell_string)
         train_type = TrainType(train_type_string, headcode_initial_string, top_speed, acceleration, deceleration, default_train_dwell)
         return train_type
-        
+
     def encode(self, train_type):
         train_type_string = train_type.name
         headcode_initial_string = train_type.headcode_initial
@@ -259,7 +259,7 @@ class SceneTranslator(object):
             return (route_code, forwards), ((float(split_route_item[1]), float(split_route_item[1])), show_route_code)
         elif len(split_route_item) == 3:
             return (route_code, forwards), ((float(split_route_item[1]), float(split_route_item[2])), show_route_code)
-            
+
     def decode_route_string(self, route_string):
         route_locations = {}
         routes = []

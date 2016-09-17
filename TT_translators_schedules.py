@@ -14,14 +14,14 @@ class NoteTranslator(object):
         for note_string in note_strings:
             notes.add_item(note_string)
         return notes
-        
+
     def encode(self, notes):
         note_strings = []
         for note in notes:
             note_strings.append(note)
         note_line = ';'.join(note_strings)
         return note_line
-                
+
 # We create a tool that translates time input and output.
 
 class TimeTranslator(object):
@@ -32,7 +32,7 @@ class TimeTranslator(object):
         minutes = int(time_strings[1])
         time = datetime(1, 1, 2, hours, minutes, 0)
         return time
-        
+
     def encode(self, time):
         hour_string = str(time.hour)
         minute_string = str(time.minute)
@@ -42,7 +42,7 @@ class TimeTranslator(object):
             minute_string = ''.join(['0', minute_string])
         time_string = ''.join([hour_string, ':', minute_string])
         return time_string
-        
+
     def exact_encode(self, time):
         time_string = self.encode(time)
         seconds = int(time.second)
@@ -98,7 +98,7 @@ class ModifierTranslator(object):
                 stripped_stop_modifier = stop_modifier.strip('d')
                 dwell_modifier = float(stripped_stop_modifier)
         return halt_modifier, dwell_modifier
-                
+
     def encode(self, halt_modifier, dwell_modifier):
         if halt_modifier == False:
             stop_modifier = 'x'
@@ -137,7 +137,7 @@ class NodeTranslator(object):
         halt_modifier, dwell_modifier = self.modifier_translator.decode(stop_modifier)
         node = Node(timing_point, platform, halt_modifier, dwell_modifier, node_speed_limit)
         return node
-        
+
     def encode(self, node):
         node_strings = [node.timing_point.name]
         if node.platform != None:
@@ -150,14 +150,14 @@ class NodeTranslator(object):
             node_strings.append(node_speed_limit_string)
         node_line = ','.join(node_strings)
         return node_line
-        
+
 # We create a tool that translates journey link input and output.
 
 class LinkModifierTranslator(object):
 
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
-    
+
     def decode(self, link_string):
         split_link_entry = split_strip(link_string, ',')
         route_code = None
@@ -171,7 +171,7 @@ class LinkModifierTranslator(object):
                 route_code = self.route_code_controller[route_code_name]
         link_modifier = LinkModifier(route_code, pathing)
         return link_modifier
-        
+
     def encode(self, link_modifier):
         link_strings = []
         if link_modifier.route_code != None:
@@ -185,7 +185,7 @@ class LinkModifierTranslator(object):
         return link_line
 
 # We create a tool that translates journey input and output.
-        
+
 class JourneyTranslator(object):
 
     def __init__(self, route_code_controller, timing_point_controller):
@@ -203,7 +203,7 @@ class JourneyTranslator(object):
             return False
         else:
             return True
-            
+
     def decode(self, journey_line):
         split_journey = self.split_strip(journey_line, ';')
         journey_spec = JourneySpec()
@@ -255,7 +255,7 @@ class JourneyConverter(object):
                 links.add_item(link)
                 just_had_a_node = False
         return nodes, links
-        
+
     def relate_nodes_and_links(self, nodes, links, edge_controller):
         for node in nodes:
             node.start_point = False
@@ -265,13 +265,13 @@ class JourneyConverter(object):
         nodes[0].end_point = True
         nodes[-1].finish_point = True
         nodes[-1].end_point = True
-        
+
         for index in range(links.length):
             nodes[index + 1].previous_link = links[index]
             nodes[index].next_link = links[index]
             links[index].previous_node = nodes[index]
             links[index].next_node = nodes[index + 1]
-        
+
         for node in nodes:
             node.route_code_changes = False
             if node.start_point:
@@ -284,7 +284,7 @@ class JourneyConverter(object):
                 if node.timing_point.platform_routes[node.platform] != None:
                     if node.timing_point.platform_routes[node.platform] != node.next_link.route_code:
                         node.route_code_changes = True
-                              
+
         for link in links:
             tp_from = link.previous_node.timing_point
             tp_to = link.next_node.timing_point
@@ -292,7 +292,7 @@ class JourneyConverter(object):
             if link.edge == None:
                 print link.previous_node.timing_point.name, link.next_node.timing_point.name
             link.distance = link.edge.edge_length
-            
+
     def convert_back(self, nodes, links):
         journey_spec = JourneySpec()
         journey_spec.add_item(nodes[0])
@@ -309,7 +309,7 @@ class JourneyConverter(object):
 # We create a tool that translates train group specification input and output.
 
 class GroupTranslator(object):
-    
+
     def __init__(self, data_controllers):
         self.data_controllers = data_controllers
         self.note_translator = NoteTranslator()
@@ -317,7 +317,7 @@ class GroupTranslator(object):
         self.frequency_translator = FrequencyTranslator()
         self.journey_translator = JourneyTranslator(self.data_controllers.route_code_controller, self.data_controllers.timing_point_controller)
         self.journey_converter = JourneyConverter()
-    
+
     def decode(self, short_headcode_string, train_type_string, note_line, association_string, principle_start_time_string, frequency_string, journey_line):
         short_headcode = ShortHeadcode(short_headcode_string)
         train_type = self.data_controllers.train_type_controller[train_type_string]
@@ -330,7 +330,7 @@ class GroupTranslator(object):
         self.journey_converter.relate_nodes_and_links(nodes, links, self.data_controllers.edge_controller)
         group = Group(short_headcode, train_type, notes, association, principle_start_time, frequency, nodes, links)
         return group
-        
+
     def encode(self, group):
         short_headcode_string = group.short_headcode.short_headcode_string
         train_type_string = group.train_type.name
