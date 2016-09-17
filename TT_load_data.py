@@ -12,28 +12,23 @@ class RouteCodeController(Finder):
 
 
 class TimingPointController(Finder):
-    def __init__(self):
-        Finder.__init__(self)
+    pass
 
 
 class EdgeController(Finder):
-    def __init__(self):
-        Finder.__init__(self)
+    pass
 
 
 class LineOfRouteController(Finder):
-    def __init__(self):
-        Finder.__init__(self)
+    pass
 
 
 class TrainTypeController(Finder):
-    def __init__(self):
-        Finder.__init__(self)
+    pass
 
 
 class SceneController(Finder):
-    def __init__(self):
-        Finder.__init__(self)
+    pass
 
 
 # We create a tool to load a file of route codes and their attributes.
