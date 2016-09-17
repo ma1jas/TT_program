@@ -4,44 +4,39 @@ from TT_translators_data import RouteCodeTranslator, TimingPointTranslator, Edge
 
 # We create controllers to store data input in a helpful way.
 
+
 class RouteCodeController(Finder):
-    
     def __init__(self):
         Finder.__init__(self)
         self.route_code_names = set()
-        
+
+
 class TimingPointController(Finder):
-    
-    def __init__(self):
-        Finder.__init__(self)
-        
+    pass
+
+
 class EdgeController(Finder):
+    pass
 
-    def __init__(self):
-        Finder.__init__(self)
-        
+
 class LineOfRouteController(Finder):
-    
-    def __init__(self):
-        Finder.__init__(self)
-        
-class TrainTypeController(Finder):
+    pass
 
-    def __init__(self):
-        Finder.__init__(self)
+
+class TrainTypeController(Finder):
+    pass
+
 
 class SceneController(Finder):
+    pass
 
-    def __init__(self):
-        Finder.__init__(self)
 
 # We create a tool to load a file of route codes and their attributes.
 
 class RouteCodeLoader(object):
-    
     def __init__(self):
         self.route_code_translator = RouteCodeTranslator()
-                
+
     def do_import(self, route_code_filename):
         route_code_controller = RouteCodeController()
         with open(route_code_filename) as route_code_file:
@@ -60,15 +55,15 @@ class RouteCodeLoader(object):
             route_code_file.write(route_code_line)
             route_code_file.write('\n')
         route_code_file.close()
-                
+
+
 # We create a tool to load a file of timing points and their attributes.
 
 class TimingPointLoader(object):
-
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
         self.timing_point_translator = TimingPointTranslator(self.route_code_controller)
-        
+
     def do_import(self, timing_point_filename):
         timing_point_controller = TimingPointController()
         with open(timing_point_filename) as timing_point_file:
@@ -77,7 +72,7 @@ class TimingPointLoader(object):
                 timing_point = self.timing_point_translator.decode(timing_point_line[0])
                 timing_point_controller[timing_point.name] = timing_point
         return timing_point_controller
-        
+
     def do_export(self, timing_point_controller, timing_point_filename):
         timing_point_file = open(timing_point_filename, 'w')
         for timing_point in timing_point_controller:
@@ -86,10 +81,10 @@ class TimingPointLoader(object):
             timing_point_file.write('\n')
         timing_point_file.close()
 
+
 # We create a tool to load a file of edges and their distances.
 
 class EdgeLoader(object):
-
     def __init__(self, route_code_controller, timing_point_controller):
         self.route_code_controller = route_code_controller
         self.timing_point_controller = timing_point_controller
@@ -116,14 +111,14 @@ class EdgeLoader(object):
                 edge_file.write('\n')
         edge_file.close()
 
+
 # We create a tool to load a file of lines of route.
 
 class LineOfRouteLoader(object):
-    
     def __init__(self, timing_point_controller):
         self.timing_point_controller = timing_point_controller
         self.line_of_route_translator = LineOfRouteTranslator(self.timing_point_controller)
-    
+
     def do_import(self, line_of_route_filename):
         line_of_route_controller = LineOfRouteController()
         with open(line_of_route_filename) as line_of_route_file:
@@ -135,7 +130,7 @@ class LineOfRouteLoader(object):
                 line_of_route.number = line_of_route_number
                 line_of_route_number = line_of_route_number + 1
         return line_of_route_controller
-        
+
     def do_export(self, line_of_route_controller, line_of_route_filename):
         line_of_route_file = open(line_of_route_filename, 'w')
         for line_of_route in line_of_route_controller:
@@ -143,14 +138,14 @@ class LineOfRouteLoader(object):
             line_of_route_file.write(line_of_route_line)
             line_of_route_file.write('\n')
         line_of_route_file.close()
-        
+
+
 # We create a tool to load a file of train types and their attributes.
 
 class TrainTypeLoader(object):
-
     def __init__(self):
         self.train_type_translator = TrainTypeTranslator()
-    
+
     def do_import(self, train_type_filename):
         train_type_controller = TrainTypeController()
         with open(train_type_filename) as train_type_file:
@@ -168,10 +163,10 @@ class TrainTypeLoader(object):
             train_type_file.write('\n')
         train_type_file.close()
 
+
 # We create a tool to load a file of visualisation scenes.
 
 class SceneLoader(object):
-
     def __init__(self, timing_point_controller, edge_controller, route_code_controller):
         self.timing_point_controller = timing_point_controller
         self.edge_controller = edge_controller
@@ -190,11 +185,11 @@ class SceneLoader(object):
                     scene.number = scene_number
                     scene_number = scene_number + 1
         return scene_controller
- 
+
+
 # Now we can import and export the data.
 
 class DataControllers(object):
-
     def __init__(self, route_code_controller, timing_point_controller, edge_controller, line_of_route_controller, train_type_controller, scene_controller):
         self.route_code_controller = route_code_controller
         self.timing_point_controller = timing_point_controller
@@ -202,12 +197,12 @@ class DataControllers(object):
         self.line_of_route_controller = line_of_route_controller
         self.train_type_controller = train_type_controller
         self.scene_controller = scene_controller
-                
-class DataLoader(object):
 
+
+class DataLoader(object):
     def import_data(self, data_filenames_in):
         route_code_filename, timing_point_filename, edge_filename, line_of_route_filename, train_type_filename, scene_filename = data_filenames_in
-        
+
         route_code_loader = RouteCodeLoader()
         route_code_controller = route_code_loader.do_import(route_code_filename)
         timing_point_loader = TimingPointLoader(route_code_controller)
@@ -220,11 +215,11 @@ class DataLoader(object):
         train_type_controller = train_type_loader.do_import(train_type_filename)
         scene_loader = SceneLoader(timing_point_controller, edge_controller, route_code_controller)
         scene_controller = scene_loader.do_import(scene_filename)
-        
+
         data_controllers = DataControllers(route_code_controller, timing_point_controller, edge_controller, line_of_route_controller, train_type_controller, scene_controller)
 
         return data_controllers
-        
+
     def export_data(self, data_controllers, data_filenames_out):
         route_code_filename, timing_point_filename, edge_filename, line_of_route_filename, train_type_filename = data_filenames_out
         route_code_loader = RouteCodeLoader()
