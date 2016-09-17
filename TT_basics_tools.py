@@ -53,19 +53,18 @@ class Finder(object):
             return True
         else:
             return False
-            
-# We create a tool that takes a list of strings and strips all whitespace from its elements.
 
-class SplitStripper(object):
 
-    def split_strip(self, input_string, separator):
-        stripped_list = []
-        split_string_list = input_string.split(separator)
-        for item in split_string_list:
-            stripped_item = item.strip()
-            stripped_list.append(stripped_item)
-        return stripped_list
-        
+def split_strip(input_string, separator):
+    ''' Takes a list of strings and strips all whitespace from its elements.
+    '''
+    stripped_list = []
+    split_string_list = input_string.split(separator)
+    for item in split_string_list:
+        stripped_item = item.strip()
+        stripped_list.append(stripped_item)
+    return stripped_list
+
 # We now introduce a tool that takes an integer list and counts how long each non-zero block and each zero block is. We assume that we start and end with (possibly empty) zero blocks. So [1, 12, 0, 0, 0, -4, 0, 0, 0, 0, 1] would return [2, 1, 1], [0, 3, 4, 0].
 
 class ZeroBlockMeasurer(object):

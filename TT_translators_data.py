@@ -1,5 +1,5 @@
 from __future__ import division
-from TT_basics_tools import SplitStripper, Finder, Lister
+from TT_basics_tools import split_strip, Finder, Lister
 from TT_basics_data import RouteCode, PlatformRoutes, RouteSpeeds, Station, Yard, Loop, Junction, Siding, Edge, TrainType, LineOfRouteNode, LineOfRoute, SceneNode, SceneLink, Scene
 
 
@@ -7,8 +7,7 @@ from TT_basics_data import RouteCode, PlatformRoutes, RouteSpeeds, Station, Yard
 
 class RouteCodeTranslator(object):
     def decode(self, route_code_line):
-        split_stripper = SplitStripper()
-        name_string, maximum_speed_string, colour_string = split_stripper.split_strip(route_code_line, ';')
+        name_string, maximum_speed_string, colour_string = split_strip(route_code_line, ';')
         maximum_speed = float(maximum_speed_string)/60
         route_code = RouteCode(name_string, maximum_speed, colour_string)
         return route_code
@@ -30,10 +29,9 @@ class PlatformRouteTranslator(object):
     def decode(self, platform_routes_line):
         platform_routes = PlatformRoutes()
         if platform_routes_line.strip() != '':
-            split_stripper = SplitStripper()
             platform_route_strings = platform_routes_line.split(',')
             for platform_route_string in platform_route_strings:
-                platform_string, route_code_name = split_stripper.split_strip(platform_route_string, ':')
+                platform_string, route_code_name = split_strip(platform_route_string, ':')
                 route_code = self.route_code_controller[route_code_name]
                 platform_routes[platform_string] = route_code
         return platform_routes
@@ -60,8 +58,7 @@ class TimingPointTranslator(object):
         self.timing_point_types = {'s': Station, 'y': Yard, 'l': Loop, 'j': Junction, 'i': Siding}
 
     def decode(self, timing_point_line):
-        split_stripper = SplitStripper()
-        name_string, abbrev_string, timing_point_type_string, default_halt_string, default_dwell_string, platform_routes_string = split_stripper.split_strip(timing_point_line, ';')
+        name_string, abbrev_string, timing_point_type_string, default_halt_string, default_dwell_string, platform_routes_string = split_strip(timing_point_line, ';')
         default_halt = False
         if default_halt_string =='True':
             default_halt = True
@@ -101,10 +98,9 @@ class RouteSpeedTranslator(object):
     def decode(self, route_speeds_line):
         route_speeds = RouteSpeeds()
         if route_speeds_line.strip() != '':
-            split_stripper = SplitStripper()
             route_speed_strings = route_speeds_line.split(',')
             for route_speed_string in route_speed_strings:
-                route_code_string, speed_string = split_stripper.split_strip(route_speed_string, ':')
+                route_code_string, speed_string = split_strip(route_speed_string, ':')
                 route_code = self.route_code_controller[route_code_string]
                 speed = float(speed_string)/60
                 route_speeds[route_code] = speed
@@ -133,8 +129,7 @@ class EdgeTranslator(object):
         self.route_speed_translator = RouteSpeedTranslator(self.route_code_controller)
 
     def decode(self, edge_line):
-        split_stripper = SplitStripper()
-        timing_point_from_string, timing_point_to_string, distance_string, route_speeds_line = split_stripper.split_strip(edge_line, ';')
+        timing_point_from_string, timing_point_to_string, distance_string, route_speeds_line = split_strip(edge_line, ';')
         timing_point_from = self.timing_point_controller[timing_point_from_string]
         timing_point_to = self.timing_point_controller[timing_point_to_string]
         edge_length = float(distance_string)
@@ -160,9 +155,8 @@ class LineOfRouteTranslator(object):
         self.timing_point_controller = timing_point_controller
     
     def decode(self, line_of_route_line):
-        split_stripper = SplitStripper()
         line_of_route = LineOfRoute()
-        node_string_list = split_stripper.split_strip(line_of_route_line, ';')
+        node_string_list = split_strip(line_of_route_line, ';')
         for node_string in node_string_list:
             timing_point_string = node_string.split('*')[0]
             timing_point_string = timing_point_string.strip()
@@ -189,8 +183,7 @@ class LineOfRouteTranslator(object):
         
 class TrainTypeTranslator(object):
     def decode(self, train_type_line):
-        split_stripper = SplitStripper()
-        train_type_string, headcode_initial_string, top_speed_string, acceleration_string, deceleration_string, default_train_dwell_string = split_stripper.split_strip(train_type_line, ';')
+        train_type_string, headcode_initial_string, top_speed_string, acceleration_string, deceleration_string, default_train_dwell_string = split_strip(train_type_line, ';')
         top_speed = float(top_speed_string)/60
         acceleration = float(acceleration_string)
         deceleration = float(deceleration_string)
@@ -216,7 +209,6 @@ class SceneTranslator(object):
         self.timing_point_controller = timing_point_controller
         self.edge_controller = edge_controller
         self.route_code_controller = route_code_controller
-        self.split_stripper = SplitStripper()
 
     def decode_platform_string(self, platform_string):
         platform_locations = {}
@@ -224,14 +216,14 @@ class SceneTranslator(object):
         dot_locations = []
         location = 1
         track_y_max = 1
-        platform_inputs = self.split_stripper.split_strip(platform_string, ',')
+        platform_inputs = self.split_strip(platform_string, ',')
         for platform_input in platform_inputs:
-            platform_details = self.split_stripper.split_strip(platform_input, '@')
+            platform_details = self.split_strip(platform_input, '@')
             show_platform_name = True
             platform = platform_details[0]
             if '*' in platform:
                 show_platform_name = False
-                platform = self.split_stripper.split_strip(platform, '*')[0]
+                platform = self.split_strip(platform, '*')[0]
             if platform != 'x':
                 if len(platform_details) == 1:
                     platform_y = location
@@ -248,13 +240,13 @@ class SceneTranslator(object):
         return platform_locations, platforms, dot_locations, track_y_max
 
     def decode_route_item(self, route_item, location):
-        split_route_item = self.split_stripper.split_strip(route_item, '@')
+        split_route_item = self.split_strip(route_item, '@')
         route_plus_direction_string = split_route_item[0]
         route_code_string, forward_string = route_plus_direction_string[:-1], route_plus_direction_string[-1]
         show_route_code = True
         if '^' in route_code_string:
             show_route_code = False
-            route_code_string = self.split_stripper.split_strip(route_code_string, '^')[0]
+            route_code_string = self.split_strip(route_code_string, '^')[0]
         route_code = self.route_code_controller[route_code_string]
         if route_code == None:
             print route_item
@@ -272,7 +264,7 @@ class SceneTranslator(object):
         route_locations = {}
         routes = []
         location = 1
-        route_items = self.split_stripper.split_strip(route_string, ',')
+        route_items = self.split_strip(route_string, ',')
         for route_item in route_items:
             (route_code, forwards), ((route_begin_y, route_end_y), show_route_code) = self.decode_route_item(route_item, location)
             route_locations[(route_code, forwards)] = ((route_begin_y, route_end_y), show_route_code)
@@ -281,7 +273,7 @@ class SceneTranslator(object):
         return route_locations, routes
 
     def decode_node_information(self, node_information):
-        timing_point_name, y_string, platform_string = self.split_stripper.split_strip(node_information, ':')
+        timing_point_name, y_string, platform_string = self.split_strip(node_information, ':')
         timing_point = self.timing_point_controller[timing_point_name]
         platform_locations, platforms, dot_locations, track_y_max = self.decode_platform_string(platform_string)
         scene_node = SceneNode(timing_point, platform_locations, platforms, dot_locations)
@@ -294,7 +286,7 @@ class SceneTranslator(object):
         if link_information == None:
             return []
         make_into_links = []
-        link_inputs = self.split_stripper.split_strip(link_information, ':')
+        link_inputs = self.split_strip(link_information, ':')
         for link_input in link_inputs:
             if '>' in link_input or '}' in link_input:
                 link_from = link_input
@@ -312,7 +304,7 @@ class SceneTranslator(object):
                     route_string = link_input
                     where = 0
                 else:
-                    route_string, link_to = self.split_stripper.split_strip(link_input, '*')
+                    route_string, link_to = self.split_strip(link_input, '*')
                     if '{' in link_to:
                         main = False
                     where = int(link_to[1:])
@@ -334,9 +326,9 @@ class SceneTranslator(object):
         partial_scene_links = {}
         partial_scene_link_from_previous = None
         first_node = True
-        scene_inputs = self.split_stripper.split_strip(scene_line, ';')
+        scene_inputs = self.split_strip(scene_line, ';')
         for scene_input in scene_inputs:
-            split_information = self.split_stripper.split_strip(scene_input, '#')
+            split_information = self.split_strip(scene_input, '#')
             node_information, link_information = split_information[0], None
             if len(split_information) == 2:
                 link_information = split_information[1]
