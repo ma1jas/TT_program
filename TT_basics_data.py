@@ -23,31 +23,31 @@ class TimingPoint(object):
         self.number_of_platforms = 1
         self.edges_in = []
         self.edges_out = []
-    
+
     def add_edge_in(self, edge):
         self.edges_in.append(edge)
-    
+
     def add_edge_out(self, edge):
         self.edges_out.append(edge)
 
 class Station(TimingPoint):
-    
+
     def __init__(self, name, abbrev, default_halt, default_dwell, platform_routes):
         TimingPoint.__init__(self, name, abbrev, default_halt, default_dwell, platform_routes)
         self.type = 's'
-        
+
 class Junction(TimingPoint):
 
     def __init__(self, name, abbrev, default_halt, default_dwell, platform_routes):
         TimingPoint.__init__(self, name, abbrev, default_halt, default_dwell, platform_routes)
         self.type = 'j'
-        
+
 class Loop(TimingPoint):
 
     def __init__(self, name, abbrev, default_halt, default_dwell, platform_routes):
         TimingPoint.__init__(self, name, abbrev, default_halt, default_dwell, platform_routes)
         self.type = 'l'
-        
+
 class Yard(TimingPoint):
 
     def __init__(self, name, abbrev, default_halt, default_dwell, platform_routes):
@@ -66,14 +66,14 @@ class PlatformRoutes(Finder):
 
     def __init__(self):
         Finder.__init__(self)
-        
+
     def __getitem__(self, platform):
         if platform in self.finder:
             return self.finder[platform]
-        
+
     def __iter__(self):
         return self.finder.iterkeys()
-        
+
 # We introduce edges, which connect timing points.
 
 class Edge(object):
@@ -83,7 +83,7 @@ class Edge(object):
         self.timing_point_to = timing_point_to
         self.edge_length = edge_length
         self.route_speeds = route_speeds
-    
+
     @property
     def name(self):
         return '%s -> %s' % (self.timing_point_from.name, self.timing_point_to.name)
@@ -100,14 +100,14 @@ class RouteSpeeds(Finder):
 
     def __init__(self):
         Finder.__init__(self)
-        
+
     def __getitem__(self, route_code):
         if route_code in self.finder:
             return self.finder[route_code]
 
     def __iter__(self):
         return self.finder.iterkeys()
-                
+
 # We introduce lines of route, which show which timing points are found in what sequence on a particular stretch of line. These will form the geography for timetable graphs.
 
 class LineOfRouteNode(object):
@@ -120,24 +120,24 @@ class LineOfRoute(Lister):
 
     def __init__(self):
         Lister.__init__(self)
-    
+
     @property
     def first_location(self):
         return self[0].timing_point
-        
+
     @property
     def last_location(self):
         return self[-1].timing_point
-        
+
     @property
     def name(self):
         return '%s -> %s' % (self.first_location.name, self.last_location.name)
-    
+
     def make_node_finder(self):
         self.node_finder = {}
         for node in self:
             self.node_finder[node.timing_point] = node
-    
+
     def collect_seq_edges(self, edge_controller):
         self.seq_edges = Lister()
         self[0].distance_from_start = 0
@@ -149,7 +149,7 @@ class LineOfRoute(Lister):
                 node.distance_from_start = previous_node.distance_from_start + edge.edge_length
             previous_node = node
         self.total_distance = self[-1].distance_from_start
-        
+
     def collect_all_edges(self, edge_controller):
         self.all_edges = set()
         self.forward_edges = set()
@@ -168,7 +168,7 @@ class LineOfRoute(Lister):
                     self.all_edges.add(reversed_edge)
                 if self[index + step].is_it_mandatory:
                     go_further = False
-                    
+
 # We introduce different types of trains.
 
 class TrainType(object):
@@ -186,23 +186,23 @@ class TrainType(object):
             self.passenger = True
         if self.headcode_initial == '1':
             self.express = True
-        
+
 # We introduce short headcodes - four-character strings that identify train groups.
 
 class ShortHeadcode(object):
 
     def __init__(self, short_headcode_string):
         self.short_headcode_string = short_headcode_string
-    
+
     def is_valid(self):
         if len(self.short_headcode_string) != 4:
             return False
         if match('\d[A-Z](\d\d|[A-Z][A-Z])', self.short_headcode_string) is None:
             return False
         return True
-        
+
 # We introduce headcodes - six-character strings that identify individual trains.
-        
+
 class Headcode(object):
 
     def __init__(self, headcode_string, short_headcode):
@@ -212,7 +212,7 @@ class Headcode(object):
 # Schedule notes will be collected in a list.
 
 class Notes(Lister):
-    
+
     def __init__(self):
         Lister.__init__(self)
 
@@ -243,10 +243,10 @@ class Scene(object):
 
     def add_node(self, scene_node):
         self.scene_nodes.append(scene_node)
-    
+
     def add_link(self, scene_link):
         self.scene_links.append(scene_link)
-    
+
     def add_main_link(self, scene_link):
         self.main_scene_links.append(scene_link)
 

@@ -45,7 +45,7 @@ class ScheduleShower(object):
         group.calculate_flexing()
         for timing_point, extra_dwell in group.over_dwells:
             print 'This schedule has %s minutes\' extra dwell at %s.' % (extra_dwell, timing_point.name)
-        
+
     def show_flexing(self, group):
         self.show_deficiency(group)
         self.show_extra_dwells(group)
@@ -66,7 +66,7 @@ class ScheduleShower(object):
                 if flex >= 1:
                     print group.short_headcode.short_headcode_string
                     self.show_flexing(group)
-                    
+
     def list_deficient_groups(self):
         for group in self.group_controller:
             if group.train_type.passenger:
@@ -126,9 +126,9 @@ class ScheduleShower(object):
             print ' '.join(node_strings)
             if len(link_strings) != 0:
                 print ' '.join(link_strings)
-        
+
         print '\nThe journey time is %s minutes.' % train.group.journey_time
-                    
+
     def show_schedule(self):
         short_headcode_string = raw_input('Please give the short headcode of the train group. ')
         train_number = input('Which number train of the group would you like the schedule of? ')

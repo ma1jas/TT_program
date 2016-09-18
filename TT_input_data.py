@@ -4,7 +4,7 @@ class RouteCodeInputter(object):
 
     def __init__(self, route_code_controller):
         self.route_code_controller = route_code_controller
-        
+
     def create_route_code(self):
         route_code_translator = RouteCodeTranslator()
         route_code_string = raw_input('Please give the name of the route code. ')
@@ -13,7 +13,7 @@ class RouteCodeInputter(object):
         route_code_line = ';'.join([route_code_string, maximum_speed_string, colour])
         route_code = route_code_translator.decode(route_code_line)
         self.route_code_controller[route_code_string] = route_code
-                
+
     def delete_route_code(self):
         route_code_string = raw_input('Please give the name of the route code that you want to delete. ')
         confirm = raw_input('Please hit "y" if you sure that you want to delete %s. Otherwise, hit another key. ' % (route_code_string))
@@ -50,13 +50,13 @@ class TimingPointInputter(object):
         timing_point_line = ';'.join([name, abbrev, timing_point_type, default_halt_string, default_dwell_string, platform_routes_string])
         timing_point = timing_point_translator.decode(timing_point_line)
         self.timing_point_controller[name] = timing_point
-        
+
     def delete_timing_point(self):
         name = raw_input('Please give the name of the timing point that you want to delete. ')
         confirm = raw_input('Please hit "y" if you sure that you want to delete %s. Otherwise, hit another key. ' % (name))
         if confirm == 'y':
             self.timing_point_controller.delete(name)
-        
+
     def input_timing_point(self):
         choice = raw_input('Hit "c" to create a timing point, or hit "d" to delete one. Hit "p" not to do anything. ')
         if choice == "c":
@@ -67,12 +67,12 @@ class TimingPointInputter(object):
             pass
 
 class EdgeInputter(object):
-    
+
     def __init__(self, route_code_controller, timing_point_controller, edge_controller):
         self.route_code_controller = route_code_controller
         self.timing_point_controller = timing_point_controller
         self.edge_controller = edge_controller
-        
+
     def create_edge(self):
         edge_translator = EdgeTranslator(self.timing_point_controller, self.route_code_controller)
         from_name = raw_input('Please give the name of the start timing point. ')
@@ -96,7 +96,7 @@ class EdgeInputter(object):
         if confirm == 'y':
             self.edge_controller.delete((timing_point_from, timing_point_to))
             self.edge_controller.delete((timing_point_to, timing_point_from))
-        
+
     def input_edge(self):
         choice = raw_input('Hit "c" to create an edge, or hit "d" to delete one. Hit "p" not to do anything. ')
         if choice == "c":
@@ -133,13 +133,13 @@ class LineOfRouteInputter(object):
         if choice == "d":
             self.delete_line_of_route()
         if choice == "p":
-            pass        
+            pass
 
 class TrainTypeInputter(object):
 
     def __init__(self, train_type_controller):
         self.train_type_controller = train_type_controller
-        
+
     def create_train_type(self):
         train_type_translator = TrainTypeTranslator()
         name = raw_input('Please give the name of the train type. ')
@@ -151,7 +151,7 @@ class TrainTypeInputter(object):
         train_type_line = ';'.join([name, headcode_initial, maximum_speed_string, acceleration_string, deceleration_string, default_train_dwell_string])
         train_type = train_type_translator.decode(train_type_line)
         self.train_type_controller[name] = train_type
-        
+
     def delete_train_type(self):
         name = raw_input('Please give the name of the train type that you want to delete. ')
         confirm = raw_input('Please hit "y" if you sure that you want to delete %s. Otherwise, hit another key. ' % (name))
@@ -168,7 +168,7 @@ class TrainTypeInputter(object):
             pass
 
 class DataInputter(object):
-    
+
     def __init__(self, data_controllers):
         self.data_controllers = data_controllers
 

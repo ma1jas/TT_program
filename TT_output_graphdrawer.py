@@ -5,7 +5,7 @@ from TT_basics_tools import ZeroBlockMeasurer
 from TT_translators_schedules import TimeTranslator
 
 class GraphConstructor(object):
-    
+
     def __init__(self, route_code_controller, edge_controller, group_controller, line_of_route, graph_start_time, graph_finish_time):
         self.route_code_controller = route_code_controller
         self.edge_controller = edge_controller
@@ -19,7 +19,7 @@ class GraphConstructor(object):
         self.graph_finish_time = graph_finish_time
         self.duration = (self.graph_finish_time - self.graph_start_time).seconds/60
         self.label_size = 'xx-small'
-        
+
     def calculate_separations(self):
         if self.duration <= 90:
             self.minor_separation = 1
@@ -62,14 +62,14 @@ class GraphConstructor(object):
         for xtick in self.xticks:
             self.major_xlines_xcoords.extend([xtick, xtick, None])
             self.major_xlines_ycoords.extend([0, self.line_of_route.total_distance, None])
-    
+
     def make_minor_xlines(self):
         self.minor_xlines_xcoords = []
         self.minor_xlines_ycoords = []
         for minor_xtick in self.minor_xticks:
             self.minor_xlines_xcoords.extend([minor_xtick, minor_xtick, None])
             self.minor_xlines_ycoords.extend([0, self.line_of_route.total_distance, None])
-            
+
     def make_yticks(self):
         self.yticks = []
         self.ytick_meanings = []
@@ -78,14 +78,14 @@ class GraphConstructor(object):
             self.yticks.append(ytick)
             ytick_meaning = node.timing_point.name
             self.ytick_meanings.append(ytick_meaning)
-            
+
     def make_ylines(self):
         self.ylines_xcoords = []
         self.ylines_ycoords = []
         for ytick in self.yticks:
             self.ylines_xcoords.extend([0, self.duration, None])
             self.ylines_ycoords.extend([ytick, ytick, None])
-    
+
     def direct_links_on_graph(self, group):
         links_directions = []
         for link in group.links:
@@ -96,7 +96,7 @@ class GraphConstructor(object):
             else:
                 links_directions.append(0)
         return links_directions
-        
+
     # We can now introduce a tool that will provide a list of the indices of those links that need headcode labels on the graph. Headcode labels should appear roughly midway along each connected component of the graph. There may be more than one of these, as the train may go off the graph and then re-appear later on in its schedule.
     def where_to_put_headcode_labels(self, group):
         links_directions = self.direct_links_on_graph(group)
@@ -120,22 +120,22 @@ class GraphConstructor(object):
         leg_ycoord = [mileage_1, mileage_2, None]
         self.legs_xcoords[route_code].extend(leg_xcoord)
         self.legs_ycoords[route_code].extend(leg_ycoord)
-    
+
     def set_terminus_item_to_be_drawn(self, time, mileage, route_code):
         terminus_xcoord = [time, None]
         terminus_ycoord = [mileage, None]
         self.termini_xcoords[route_code].extend(terminus_xcoord)
         self.termini_ycoords[route_code].extend(terminus_ycoord)
-    
+
     def set_half_adjustment_item_to_be_drawn(self, time, mileage):
         position = [time, mileage]
         self.half_adjustment_labels.append(position)
-    
+
     def set_pathing_item_to_be_drawn(self, time, mileage, pathing):
         pathing_string = ''.join(['(', str(pathing), ')'])
         position = [time, mileage]
         self.pathing_labels.append([pathing_string, position])
-    
+
     def set_headcode_item_to_be_drawn(self, time_1, time_2, mileage_1, mileage_2, headcode):
         xcoord = 0.5*(time_1 + time_2)
         ycoord = 0.5*(mileage_1 + mileage_2)
@@ -146,7 +146,7 @@ class GraphConstructor(object):
         else:
             rotation_value = -90
         if rotation_value > 0:
-            xcoord = xcoord - (self.duration)/40.0    
+            xcoord = xcoord - (self.duration)/40.0
         position = [xcoord, ycoord]
         self.headcode_labels.append([headcode.headcode_string, position, rotation_value])
 
@@ -169,7 +169,7 @@ class GraphConstructor(object):
 
         # We set the journey leg to be drawn.
         self.set_leg_to_be_drawn(time_A_departure, time_B_arrival, mileage_A, mileage_B, link.route_code)
-                                                            
+
         # We set a pathing label to be drawn if the link has non-None pathing value.
         if link.pathing != None:
             if mileage_B != 0:
@@ -177,11 +177,11 @@ class GraphConstructor(object):
             else:
                 mileage = 0.00001 # THIS FIXES A GLITCH WITH MATPLOTLIB.
             self.set_pathing_item_to_be_drawn(time_B_arrival, mileage, link.pathing)
-                            
+
         # We set a headcode label to be drawn if the current link is roughly midway along the current connected component of the schedule. (This is an attempt to spread the headcode labels of different groups' trains out a bit.)
         if headcode_label_needed:
             self.set_headcode_item_to_be_drawn(time_A_departure, time_B_arrival, mileage_A, mileage_B, train.headcode)
-                            
+
         # If the train starts at point A, then we set a terminus label to be drawn.
         if train_node_A.group_node.start_point:
             route_code = link.route_code
@@ -194,7 +194,7 @@ class GraphConstructor(object):
                 time_A_arrival = offset + train_node_A.group_node.rounded_arrival
                 route_code = train_node_A.group_node.route_code
                 self.set_leg_to_be_drawn(time_A_arrival, time_A_departure, mileage_A, mileage_A, route_code)
-                            
+
         # If the train finishes at point B, then we set a terminus label to be drawn.
         if train_node_B.group_node.finish_point:
             route_code = link.route_code
@@ -253,7 +253,7 @@ class GraphConstructor(object):
                 for train in group.trains:
                     if train.start_time < self.graph_finish_time and train.finish_time > self.graph_start_time:
                         self.set_train_to_be_drawn(group, links_directions, train, indices_of_links_needing_headcode_labels)
-                                
+
     def draw_the_trains(self):
         from matplotlib import pyplot # THIS IS HERE, RATHER THAN AT THE TOP, TO FIX A GLITCH WITH MATPLOTLIB FOULING UP RAW INPUTS.
         self.set_trains_to_be_drawn()
@@ -271,8 +271,8 @@ class GraphConstructor(object):
             pyplot.annotate('{0.5}', position, size = self.label_size)
             pyplot.plot(position[0], position[1], color = 'k', marker = '')
         for headcode_string, position, rotation_value in self.headcode_labels:
-            pyplot.annotate(headcode_string, position, rotation = rotation_value, size = self.label_size)        
-                                    
+            pyplot.annotate(headcode_string, position, rotation = rotation_value, size = self.label_size)
+
     def produce_graph(self, show, save):
         from matplotlib import pyplot # THIS IS HERE, RATHER THAN AT THE TOP, TO FIX A GLITCH WITH MATPLOTLIB FOULING UP RAW INPUTS.
         # We draw the x- and y- lines.
@@ -309,13 +309,13 @@ class GraphConstructor(object):
             pyplot.show()
         else:
             pyplot.clf() # This means "clear figure".
-        
+
 class GraphDrawer(object):
-    
+
     def __init__(self, data_controllers, group_controller):
         self.data_controllers = data_controllers
         self.group_controller = group_controller
-        
+
     def draw_graph(self, choice):
         if choice == 'g':
             line_of_route_number = input('Which line of route would you like to see the graph of? ')

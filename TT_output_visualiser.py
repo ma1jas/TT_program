@@ -10,7 +10,7 @@ class Locator(object):
     def __init__(self, pixels_per_mile):
         self.pixels_per_mile = pixels_per_mile
         self.pixels_per_eighth_mile = pixels_per_mile / 8
-    
+
     def interpolate(self, parameter, value_0, value_1):
         return (1 - parameter) * value_0 + parameter * value_1
 
@@ -70,7 +70,7 @@ class VisNode(object):
         self.scene_node = scene_node
 
 class VisLink(object):
-    
+
     def __init__(self, scene_link):
         self.scene_link = scene_link
 
@@ -94,13 +94,13 @@ class Visiting(object):
         return coords
 
 class Calling(Visiting):
-    
+
     def __init__(self, train, group_node, start_time, finish_time, vis_node):
         Visiting.__init__(self, train, group_node, start_time, finish_time, vis_node)
         self.halt = True
 
 class Passing(Visiting):
-    
+
     def __init__(self, train, group_node, start_time, finish_time, vis_node):
         Visiting.__init__(self, train, group_node, start_time, finish_time, vis_node)
         self.halt = False
@@ -144,7 +144,7 @@ class NodeTrainEvent(object):
             self.outward = event
 
 class NodeTrainEvents(object):
-    
+
     def __init__(self):
         self.platform_starts = {}
         self.platform_finishes = {}
@@ -167,7 +167,7 @@ class NodeTrainEvents(object):
             if finish_time != None:
                 if finish_time not in self.platform_finishes:
                     self.platform_finishes[finish_time] = NodeTrainEvent()
-                self.platform_finishes[finish_time].record_event(event, event_type)                
+                self.platform_finishes[finish_time].record_event(event, event_type)
         else:
             if event_type == 'inward':
                 passing_time = event.finish_time
@@ -176,7 +176,7 @@ class NodeTrainEvents(object):
             if passing_time not in self.non_platforms:
                 self.non_platforms[passing_time] = NodeTrainEvent()
             self.non_platforms[passing_time].record_event(event, event_type)
-    
+
 class NodeTrains(object):
 
     def __init__(self, vis_node):
@@ -185,11 +185,11 @@ class NodeTrains(object):
 
     def __setitem__(self, key, value):
         self.trains[key] = value
-                
+
     def __getitem__(self, key):
         if key in self.trains:
             return self.trains[key]
-            
+
     def __iter__(self):
         return self.trains.iterkeys()
 
@@ -335,7 +335,7 @@ class Visualisation(object):
                                     vis_link.begin_vis_node.node_trains.record_event(train, traversing, 'inward', end_platform)
                 previous_train_node = next_train_node
 
-    def check_y_jumps(self): 
+    def check_y_jumps(self):
         for vis_node in self.vis_nodes:
             for train in vis_node.node_trains:
                 platform_starts = vis_node.node_trains[train].platform_starts
@@ -363,13 +363,13 @@ class Visualisation(object):
                         if outward_y != inward_y:
                             node_event.outward.begin_y_jump = (inward_y - outward_y)/2
                             node_event.inward.end_y_jump = (outward_y - inward_y)/2
-                    
+
     def set_up_visualisation(self):
         self.find_trains()
         self.find_vis_nodes_and_links()
         self.find_visitings()
         self.find_traversings()
-        self.check_y_jumps()    
+        self.check_y_jumps()
 
     def draw_lines(self, pygame, screen):
         for vis_link in self.vis_links:
@@ -395,7 +395,7 @@ class Visualisation(object):
         text = font.render(self.time_translator.exact_encode(current_time), 1, self.colours['yellow'])
         time_coords = (self.width * 0.02, self.height * 0.02)
         screen.blit(text, self.locator.int_coords(time_coords))
-        
+
         for vis_node in self.vis_nodes:
             text = small_font.render(vis_node.text, 1, self.colours['white'])
             node_coords = vis_node.coords
@@ -427,7 +427,7 @@ class Visualisation(object):
                 text = font.render(calling.train.headcode.headcode_string, 1, colour)
                 screen.blit(text, self.locator.int_coords(calling.coords))
                 pygame.draw.circle(screen, colour, self.locator.int_coords(calling.coords), 3)
-                
+
         for traversing in self.traversings:
             if traversing.start_time < current_time and traversing.finish_time > current_time:
                 text = font.render(traversing.train.headcode.headcode_string, 1, self.colours['white'])
@@ -437,11 +437,11 @@ class Visualisation(object):
 
     def show_visualisation(self):
         self.set_up_visualisation()
-       
+
         screen = pygame.display.set_mode((self.width, self.height))
         pygame.init()
         font, small_font = pygame.font.Font(None, int(0.015 * self.width)), pygame.font.Font(None, int(0.01 * self.width))
-        
+
         current_time = self.start_time
         count = 0
         processing_percentage = 0
@@ -463,7 +463,7 @@ class Visualisation(object):
             pygame.display.flip()
             current_time = current_time + self.reload_time
             count = count + 1
-            
+
             real_time_finish = datetime.now()
             processing_time = (real_time_finish - real_time_start).seconds + (real_time_finish - real_time_start).microseconds / 1000000
             sleep_time = max(0, self.cycle_time - processing_time)
