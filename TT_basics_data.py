@@ -161,7 +161,7 @@ class LineOfRoute(Lister):
                 step = step + 1
                 edge = edge_controller[(self[index].timing_point, self[index + step].timing_point)]
                 reversed_edge = edge_controller[(self[index + step].timing_point, self[index].timing_point)]
-                if edge != None:
+                if edge is not None:
                     self.forward_edges.add(edge)
                     self.all_edges.add(edge)
                     self.backward_edges.add(reversed_edge)
