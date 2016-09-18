@@ -5,7 +5,7 @@ class RouteCodeShower(object):
     def __init__(self, route_code_controller, edge_controller):
         self.route_code_controller = route_code_controller
         self.edge_controller = edge_controller
-        
+
     def show_route_code_data(self):
         choice = raw_input('Please give the route code that you want information about. If you want a list of all route codes and their information, then just hit Return. ')
         if choice != '':
@@ -17,13 +17,13 @@ class RouteCodeShower(object):
         else:
             for route_code in self.route_code_controller:
                 print 'Route code %s has line speed %smph, and is represented by colour %s on graphs.' % (route_code.name, 60*route_code.maximum_speed, route_code.colour)
-                
+
 class TimingPointShower(object):
-    
+
     def __init__(self, timing_point_controller, line_of_route_controller):
         self.timing_point_controller = timing_point_controller
         self.line_of_route_controller = line_of_route_controller
-        
+
     def show_timing_point_data(self):
         name = raw_input('Please give the name of the timing point that you want information about. ')
         timing_point = self.timing_point_controller[name]
@@ -43,13 +43,13 @@ class TimingPointShower(object):
         for platform in timing_point.platform_routes:
             route_code = timing_point.platform_routes[platform]
             print 'Platform %s lies on %s.' % (platform, route_code.name)
-        
+
 class EdgeShower(object):
-    
+
     def __init__(self, timing_point_controller, edge_controller):
         self.timing_point_controller = timing_point_controller
         self.edge_controller = edge_controller
-        
+
     def show_edge_data(self):
         from_string = raw_input('Please give the name of the start timing point. ')
         to_string = raw_input('Please give the name of the end timing point. ')
@@ -60,13 +60,13 @@ class EdgeShower(object):
         for route_code in edge.route_speeds:
             speed = edge.route_speeds[route_code]
             print 'On this edge, %s has maximum speed %smph.' % (route_code.name, 60*speed)
-        
+
 class LineOfRouteShower(object):
-    
+
     def __init__(self, timing_point_controller, line_of_route_controller):
         self.timing_point_controller = timing_point_controller
         self.line_of_route_controller = line_of_route_controller
-        
+
     def show_line_of_route_data(self):
         choice = raw_input('Please give the line of route that you want information about. If you want a list of all lines of route, then just hit Return. ')
         if choice != '':
@@ -78,14 +78,14 @@ class LineOfRouteShower(object):
         else:
             index = 0
             for line_of_route in self.line_of_route_controller:
-                print '%s: %s (%s timing points)' % (index, line_of_route.name, line_of_route.length)
+                print '%s: %s (%s timing points)' % (index, line_of_route.name, len(line_of_route))
                 index = index + 1
-                            
+
 class TrainTypeShower(object):
 
     def __init__(self, train_type_controller):
         self.train_type_controller = train_type_controller
-        
+
     def show_train_type_data(self):
         choice = raw_input('Please give the name of the train type that you want information about. ')
         train_type = self.train_type_controller[choice]
@@ -98,7 +98,7 @@ class DataShower(object):
 
     def show_data(self):
         choice = raw_input('Hit "r" to show route code data.\nHit "t" to show timing point data.\nHit "e" to show edge data.\nHit "l" to show line of route data.\nHit "y" to show train type data.')
-        
+
         if choice == 'r':
             route_code_shower = RouteCodeShower(self.data_controllers.route_code_controller, self.data_controllers.edge_controller)
             route_code_shower.show_route_code_data()

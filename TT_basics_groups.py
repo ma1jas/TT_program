@@ -252,7 +252,7 @@ class Group(object):
             headcode = self.headcode_converter.make_long_from_short(self.short_headcode, start_time)
             train = Train(self, headcode, start_time)
             train.finish_time = start_time + timedelta(minutes = self.rounded_duration)
-            self.trains.add_item(train)
+            self.trains.append(train)
             start_time = start_time + timedelta(minutes = self.frequency)
     
     # The next three methods are used to provide detailed user output about a given train group.

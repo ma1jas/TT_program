@@ -165,7 +165,7 @@ class LineOfRouteTranslator(object):
             if '*' in node_string:
                 is_it_mandatory = False
             line_of_route_node = LineOfRouteNode(timing_point, is_it_mandatory)
-            line_of_route.add_item(line_of_route_node)
+            line_of_route.append(line_of_route_node)
         return line_of_route
 
     def encode(self, line_of_route):
@@ -318,7 +318,7 @@ class SceneTranslator(object):
             begin_name, end_name = scene_link.begin_scene_node.timing_point.name, scene_link.end_scene_node.timing_point.name
             print ''.join(['There is no edge between ', begin_name, ' and ', end_name, '.'])
         scene_link.reverse_edge =  self.edge_controller[scene_link.end_scene_node.timing_point, scene_link.begin_scene_node.timing_point]
-        scene_link.length = scene_link.edge.edge_length
+        len(scene_link) = scene_link.edge.edge_length
 
     def decode(self, scene_line):
         scene = Scene()
