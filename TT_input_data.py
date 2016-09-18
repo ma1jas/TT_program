@@ -104,28 +104,28 @@ class EdgeInputter(object):
         if choice == "d":
             self.delete_edge()
         if choice == "p":
-            pass        
-    
+            pass
+
 class LineOfRouteInputter(object):
 
     def __init__(self, timing_point_controller, line_of_route_controller):
         self.timing_point_controller = timing_point_controller
         self.line_of_route_controller = line_of_route_controller
-        
+
     def create_line_of_route(self):
         line_of_route_translator = LineOfRouteTranslator(self.timing_point_controller)
         line_of_route_line = raw_input('Please enter the timing points that form the line of route, separated by semicolons. If a timing point is to be optional, then add an asterisk after it. ')
         line_of_route = line_of_route_translator.decode(line_of_route_line)
-        self.line_of_route_controller.add_item(line_of_route)
-        
+        self.line_of_route_controller.append(line_of_route)
+
     def delete_line_of_route(self):
         line_of_route_number_string = raw_input('Please give the number of the line of route that you want to delete. ')
         line_of_route_number = int(line_of_route_number_string)
         line_of_route = self.line_of_route_controller[line_of_route_number]
         confirm = raw_input('Please hit "y" if you sure that you want to delete %s. Otherwise, hit another key. ' % (line_of_route.name))
         if confirm == 'y':
-            self.line_of_route_controller.delete_item(line_of_route_number)
-        
+            self.line_of_route_controller.remove(line_of_route_number)
+
     def input_line_of_route(self):
         choice = raw_input('Hit "c" to create a line of route, or hit "d" to delete one. Hit "p" not to do anything. ')
         if choice == "c":

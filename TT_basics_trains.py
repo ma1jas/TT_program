@@ -38,7 +38,7 @@ class Train(object):
         self.train_nodes = Lister()
         for group_node in self.group.nodes:
             train_node = TrainNode(group_node)
-            self.train_nodes.add_item(train_node)
+            self.train_nodes.append(train_node)
                     
     def calculate_timings(self):
         for train_node in self.train_nodes:

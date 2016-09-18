@@ -145,7 +145,7 @@ class LineOfRoute(Lister):
         for node in self:
             if previous_node != None:
                 edge = edge_controller[(previous_node.timing_point, node.timing_point)]
-                self.seq_edges.add_item(edge)
+                self.seq_edges.append(edge)
                 node.distance_from_start = previous_node.distance_from_start + edge.edge_length
             previous_node = node
         self.total_distance = self[-1].distance_from_start

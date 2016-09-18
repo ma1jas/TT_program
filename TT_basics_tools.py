@@ -6,12 +6,6 @@ class Lister(list):
     def length(self):
         return len(self)
 
-    def add_item(self, item):
-        self.append(item)
-
-    def delete_item(self, item):
-        self.remove(item)
-
     def is_it_empty(self):
         return bool(self)
 

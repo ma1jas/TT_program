@@ -12,7 +12,7 @@ class NoteTranslator(object):
         notes = Notes()
         note_strings = split_strip(note_line, ';')
         for note_string in note_strings:
-            notes.add_item(note_string)
+            notes.append(note_string)
         return notes
 
     def encode(self, notes):
@@ -211,10 +211,10 @@ class JourneyTranslator(object):
             this_is_a_node_entry = self.is_this_a_node_entry(entry)
             if this_is_a_node_entry == True:
                 node = self.node_translator.decode(entry)
-                journey_spec.add_item(node)
+                journey_spec.append(node)
             else:
                 link_modifier = self.link_modifier_translator.decode(entry)
-                journey_spec.add_item(link_modifier)
+                journey_spec.append(link_modifier)
         return journey_spec
 
     def encode(self, journey_spec):
@@ -242,9 +242,9 @@ class JourneyConverter(object):
             if isinstance(journey_item, Node):
                 if just_had_a_node:
                     link = Link(last_route_code, None)
-                    links.add_item(link)
+                    links.append(link)
                 node = journey_item
-                nodes.add_item(node)
+                nodes.append(node)
                 just_had_a_node = True
             if isinstance(journey_item, LinkModifier):
                 if journey_item.route_code == None:
@@ -252,7 +252,7 @@ class JourneyConverter(object):
                 else:
                     link = Link(journey_item.route_code, journey_item.pathing)
                     last_route_code = link.route_code
-                links.add_item(link)
+                links.append(link)
                 just_had_a_node = False
         return nodes, links
 
@@ -295,15 +295,15 @@ class JourneyConverter(object):
 
     def convert_back(self, nodes, links):
         journey_spec = JourneySpec()
-        journey_spec.add_item(nodes[0])
+        journey_spec.append(nodes[0])
         for link in links:
             if link.pathing != None or link.previous_node.route_code_changes:
                 if link.previous_node.route_code_changes:
                     link_modifier = LinkModifier(link.route_code, link.pathing)
                 else:
                     link_modifier = LinkModifier(None, link.pathing)
-                journey_spec.add_item(link_modifier)
-            journey_spec.add_item(link.next_node)
+                journey_spec.append(link_modifier)
+            journey_spec.append(link.next_node)
         return journey_spec
 
 # We create a tool that translates train group specification input and output.

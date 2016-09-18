@@ -165,7 +165,7 @@ class LineOfRouteTranslator(object):
             if '*' in node_string:
                 is_it_mandatory = False
             line_of_route_node = LineOfRouteNode(timing_point, is_it_mandatory)
-            line_of_route.add_item(line_of_route_node)
+            line_of_route.append(line_of_route_node)
         return line_of_route
 
     def encode(self, line_of_route):
