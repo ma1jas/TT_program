@@ -224,9 +224,9 @@ class GraphConstructor(object):
     def set_train_to_be_drawn(self, group, links_directions, train, indices_of_links_needing_headcode_labels):
         offset_time = train.start_time - self.graph_start_time
         offset = (offset_time.days)*1440 + (offset_time.seconds)/60.0
-        for link_index in xrange(group.links.length):
+        for link_index, _ in enumerate(group.links):
             draw_link = links_directions[link_index]
-            if link_index != group.links.length - 1:
+            if link_index != len(group.links) - 1:
                 draw_next_link = links_directions[link_index + 1]
             if draw_link != 0:
                 headcode_label_needed = (link_index in indices_of_links_needing_headcode_labels)

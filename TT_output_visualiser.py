@@ -38,8 +38,7 @@ class Locator(object):
 
     def locate_and_scale(self, t, group_link, train_type, vis_link, begin_coords, end_coords):
         location_along_link = self.locate(t, group_link, train_type)
-        link_length = vis_link.scene_link.length
-        return self.scale_in_2d(location_along_link, 0, link_length, begin_coords, end_coords)
+        return self.scale_in_2d(location_along_link, 0, len(vis_link.scene_link), begin_coords, end_coords)
 
     def locate_in_traversing(self, current_time, traversing, begin_coords, end_coords):
         t = (current_time - traversing.start_time).seconds/60

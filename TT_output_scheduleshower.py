@@ -79,16 +79,15 @@ class ScheduleShower(object):
         for group in self.group_controller:
             if group.train_type.passenger:
                 self.show_low_association(group)
-        
+
     def display_train_schedule(self, train):
         time_translator = TimeTranslator()
         train.calculate_timings()
         print '\n%s: %s to %s' % (train.headcode.headcode_string, train.group.nodes[0].timing_point.name, train.group.nodes[-1].timing_point.name)
-        if train.group.notes.length != 0:
-            for note in train.group.notes:
-                print note
-                print ''
-        
+        for note in train.group.notes:
+            print note
+            print ''
+
         for train_node in train.train_nodes:
             node_strings = []
             if train_node.arrival == None:

@@ -266,7 +266,7 @@ class JourneyConverter(object):
         nodes[-1].finish_point = True
         nodes[-1].end_point = True
 
-        for index in range(links.length):
+        for index, _ in enumerate(links):
             nodes[index + 1].previous_link = links[index]
             nodes[index].next_link = links[index]
             links[index].previous_node = nodes[index]

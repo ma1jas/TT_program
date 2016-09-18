@@ -2,27 +2,12 @@
 
 
 class Lister(list):
-    @property
-    def length(self):
-        return len(self)
-
     def is_it_empty(self):
         return bool(self)
 
 # We create a "dictionary object" class, so as later to be able to instantiate self-contained dictionary objects.
 
-class Finder(object):
-
-    def __init__(self):
-        self.finder = {}
-
-    @property
-    def length(self):
-        return len(self.finder)
-
-    def __setitem__(self, key, value):
-        self.finder[key] = value
-
+class Finder(dict):
     def delete(self, key):
         self.finder.__delitem__(key)
 
@@ -34,10 +19,7 @@ class Finder(object):
         return self.finder.itervalues()
 
     def is_it_empty(self):
-        if self.length == 0:
-            return True
-        else:
-            return False
+        return bool(self)
 
 
 def split_strip(input_string, separator):

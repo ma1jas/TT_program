@@ -78,7 +78,7 @@ class LineOfRouteShower(object):
         else:
             index = 0
             for line_of_route in self.line_of_route_controller:
-                print '%s: %s (%s timing points)' % (index, line_of_route.name, line_of_route.length)
+                print '%s: %s (%s timing points)' % (index, line_of_route.name, len(line_of_route))
                 index = index + 1
 
 class TrainTypeShower(object):

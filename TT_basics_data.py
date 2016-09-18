@@ -154,7 +154,7 @@ class LineOfRoute(Lister):
         self.all_edges = set()
         self.forward_edges = set()
         self.backward_edges = set()
-        for index in range(self.length - 1):
+        for index in range(len(self) - 1):
             go_further = True
             step = 0
             while go_further:
@@ -256,17 +256,17 @@ class Scene(object):
         while number_of_scene_nodes_left > 0:
             for scene_link in self.main_scene_links:
                 if scene_link.begin_scene_node.x == None and scene_link.end_scene_node.x != None:
-                    scene_link.begin_scene_node.x = scene_link.end_scene_node.x - scene_link.length
+                    scene_link.begin_scene_node.x = scene_link.end_scene_node.x - len(scene_link)
                     number_of_scene_nodes_left = number_of_scene_nodes_left - 1
                     if scene_link.begin_scene_node.x < minimum_x:
                         minimum_x = scene_link.begin_scene_node.x
                 if scene_link.begin_scene_node.x != None and scene_link.end_scene_node.x == None:
-                    scene_link.end_scene_node.x = scene_link.begin_scene_node.x + scene_link.length
+                    scene_link.end_scene_node.x = scene_link.begin_scene_node.x + len(scene_link)
                     number_of_scene_nodes_left = number_of_scene_nodes_left - 1
                     if scene_link.end_scene_node.x > maximum_x:
                         maximum_x = scene_link.end_scene_node.x
         self.minimum_x, self.maximum_x = minimum_x, maximum_x
-        self.total_distance = maximum_x - minimum_x   
+        self.total_distance = maximum_x - minimum_x
 
     def assign_locations(self):
         for scene_node in self.scene_nodes:
