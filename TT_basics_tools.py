@@ -1,28 +1,19 @@
 # We create a "list object" class, so as later to be able to instantiate self-contained list objects.
 
-class Lister(object):
 
-    def __init__(self):
-        self.lister = []
-
+class Lister(list):
     @property
     def length(self):
-        return len(self.lister)
+        return len(self)
 
     def add_item(self, item):
-        self.lister.append(item)
+        self.append(item)
 
     def delete_item(self, item):
-        self.lister.remove(item)
-
-    def __getitem__(self, reference):
-        return self.lister[reference]
+        self.remove(item)
 
     def is_it_empty(self):
-        if self.length == 0:
-            return True
-        else:
-            return False
+        return bool(self)
 
 # We create a "dictionary object" class, so as later to be able to instantiate self-contained dictionary objects.
 
